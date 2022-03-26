@@ -48,7 +48,7 @@ lblPresent.grid(row=0,column=2, sticky=W)
 lblNP = Label(myframe,font=('arial',10,'bold'), text="Reasons of Absent", bd=5, width = 25)
 lblNP.grid(row=0,column=3, sticky=W)
 
-# Resent button and current date
+# Reset button and current date
 btnArrow = Button(myframe, text='Reset', padx=2, pady=2, bd=5, fg='black', font = ('arial', 10, 'bold'),
              width = 11, height=1).grid(row = 0, column =4)
 lblDate= Label(myframe, font=('arial',11,'bold'), textvariable=Date, padx=4,pady=4,bd=4,fg='black', bg = 'white', relief = 'sunken')
@@ -64,10 +64,10 @@ for i in roster:
     lblName = Label(myframe, font = ('arial', 10,'bold'),text=i, padx=3, pady=1, bd=1, width = 12)
     lblName.grid(row=1+roster.index(i),column=1, sticky = W)
 
-    lblPresent = Label(myframe,font=('arial',10,'bold'), text="P           ", padx=1, pady=1, bd=1, width = 12)
-    lblPresent.grid(row=1+roster.index(i),column=2, sticky=W)
-    check_box=ttk.Checkbutton(myframe)
+    var = tk.IntVar()
+    check_box=ttk.Checkbutton(myframe, text = "P", variable = var)
     check_box.grid(row=1+roster.index(i), column = 2)
+
 
     box = ttk.Combobox(myframe, state='readonly')
     box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
@@ -82,15 +82,16 @@ for i in roster:
 
 
 
-# count how many are present from the check box   
+#count how many are present from the check box   
     present_count = []
     appointment_count = []
     child_care_count = []
     vacation_count = []
 
     for i in roster:
+    #  the following two lines already exist in row 67 and 68   
         var = tk.IntVar()
-        check = tk.Checkbutton(myframe, text = 'P', variable = var)
+        check_box=ttk.Checkbutton(myframe, text = "P", variable = var)
         if tk.IntVar() == 1:
             present_count += 1
 
@@ -123,6 +124,9 @@ for i in roster:
     lbltotal_vacation_count = Label(myframe,font=('arial',14,'bold'), bd=5)
     lbltotal_vacation_count.grid(row=len(roster)+5,column=2, sticky=W)
 
+def Reset():
+    var.deselect()
+    box.current(0)
 
 
 root.geometry("900x300")
