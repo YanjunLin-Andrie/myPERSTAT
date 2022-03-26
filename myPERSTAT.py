@@ -84,12 +84,22 @@ for i in roster:
 
 # count how many are present from the check box   
     present_count = []
+    appointment_count = []
+    child_care_count = []
+    vacation_count = []
+
     for i in roster:
         var = tk.IntVar()
         check = tk.Checkbutton(myframe, text = 'P', variable = var)
         if tk.IntVar() == 1:
             present_count += 1
 
+        if box['values'][i] == 'Appointment':
+            appointment_count += 1
+        if box['values'][i] == 'Child Care':
+            child_care_count += 1
+        if box['values'][i] == 'Vacation':
+            vacation_count += 1
 
 
 # last rows of the table which summarizes the total number of presence and total number of people for each reason of absence
