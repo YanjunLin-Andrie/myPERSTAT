@@ -9,7 +9,7 @@ import datetime
 #Designed backgroun and usage area of the app
 root = Tk()
 root.title("PERSTAT")
-root.geometry('900x3000+0+0')
+root.geometry('750x400+0+0')
 root.configure(background = "black")
 
 
@@ -30,7 +30,7 @@ mycanvas.configure(yscrollcommand=yscrollbar.set)
 mycanvas.bind('<Configure>', lambda e: mycanvas.configure(scrollregion=mycanvas.bbox('all')))
 
 # design of the background of the frame
-myframe = Frame(mycanvas, width = 900, height = 3000, bd=6, relief="raised" )
+myframe = Frame(mycanvas, width = 750, height = 400, bd=6, relief="raised" )
 mycanvas.create_window((0,0), window=myframe, anchor="nw")
 wrapper.pack(fill="both", expand="yes", padx=10, pady=10)
 
@@ -51,14 +51,23 @@ lblNP.grid(row=0,column=3, sticky=W)
 
 # Reset button 
 def Reset():
-    for i in store_var:
-        i.get() == False
-        present_count == 0
-    
-    box.current(0)
+    # iterate over the roster list
+    for i in roster:
+    # clear present checkboxes
+        var.set(0)
+    # set all comboboxes to the default value at index 0
+        box.current(0)
 
+    # set Total Present Count to 0
+    present_count == 0
+    # set Total appointment count to 0
+    lbltotal_appointment_count['text'] == 0
+    # set total child care count to 0
+    lbltotal_child_care_count['text'] == 0
+    # set total vacation count to 0
+    lbltotal_vacation_count['text'] == 0
 
-
+# display of the Reset button on the first row
 btnReset = Button(myframe, text='Reset', padx=2, pady=2, bd=5, fg='black', font = ('arial', 10, 'bold'),
              width = 11, height=1, command= Reset).grid(row = 0, column =4)
 
@@ -75,6 +84,23 @@ def Present_counts(present_count=present_count):
             present_count += 1
     lbltotal_present_count['text'] = [present_count]
 
+#count each occurance of each reasons from all boxes
+appointment_count = 0
+child_care_count = 0
+vacation_count = 0
+def Reasons_counts(appointment_count = appointment_count, child_care_count = child_care_count, vacation_count = vacation_count):
+    for box in boxes:
+        if box.get() == 'Appointment':
+            appointment_count.x += 1
+        if box.get() == 'Child Care':
+            child_care_count += 1
+        if box.get() == 'Vacation':
+            vacation_count += 1
+    
+    lbltotal_appointment_count['text'] = appointment_count.x
+    lbltotal_child_care_count['text'] = child_care_count
+    lbltotal_vacation_count['text'] = vacation_count
+
 # Loop around the list of soldiers/student/workers that needs to track presence of to build the main body of the app to track each 
 # person's status
 boxes = []
@@ -85,7 +111,6 @@ for i in roster:
 
     lblName = Label(myframe, font = ('arial', 10,'bold'),text=i, padx=3, pady=1, bd=1, width = 12)
     lblName.grid(row=1+roster.index(i),column=1, sticky = W)
-
     
     var = tk.IntVar()
     check_box=ttk.Checkbutton(myframe, text = "P", variable = var, command=Present_counts)
@@ -96,7 +121,7 @@ for i in roster:
     box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
     box.current(0)
     box.grid(row=1+roster.index(i), column=3)
-
+    box.bind("<<ComboboxSelected>>", Reasons_counts)
     boxes.append(box)
 
 # empty cells to keep a nice format and appearance of the entire table
@@ -105,22 +130,10 @@ for i in roster:
     lblempty2 = Label(myframe,font=('arial',10,'bold'), text="", padx=1, pady=1, bd=1, fg="black", width = 12)
     lblempty2.grid(row=1+roster.index(i),column=5, sticky=W)
 
-#count each occurance of each reasons from all boxes
-appointment_count = 0
-child_care_count = 0
-vacation_count = 0
-def Reasons_counts(appointment_count = appointment_count, child_care_count = child_care_count, vacation_count = vacation_count):
-    for box in boxes:
-        if box.get() == 'Appointment':
-            appointment_count += 1
-        if box.get() == 'Child Care':
-            child_care_count += 1
-        if box.get() == 'Vacation':
-            vacation_count += 1
-    
-    lbltotal_appointment_count['text'] = [appointment_count]
-    lbltotal_child_care_count['text'] = [child_care_count]
-    lbltotal_vacation_count['text'] = [vacation_count]
+# If var.get(), disable Combobox
+
+
+
 
 # last rows of the table which summarizes the total number of presence and total number of people for each reason of absence
 lbltotal_present = Label(myframe,font=('arial',14,'bold'), text="Total Present", bd=5)
@@ -145,6 +158,6 @@ lbltotal_vacation_count.grid(row=len(roster)+5,column=2, sticky=W)
 
 
 
-root.geometry("900x300")
-root.resizable(False,False)
+root.geometry("750x400")
+root.resizable(True,True)
 root.mainloop()
