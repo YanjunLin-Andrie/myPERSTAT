@@ -52,20 +52,25 @@ lblNP.grid(row=0,column=3, sticky=W)
 # Reset button 
 def Reset():
     # iterate over the roster list
-    for i in roster:
+    for i in range(len(roster)):
     # clear present checkboxes
-        var.set(0)
+        store_var[i].set(0)
     # set all comboboxes to the default value at index 0
-        box.current(0)
+        boxes[i].current(0)
 
     # set Total Present Count to 0
     present_count == 0
+    lbltotal_present_count['text'] = present_count
     # set Total appointment count to 0
     lbltotal_appointment_count['text'] == 0
+    lbltotal_appointment_count['text'] = appointment_count
     # set total child care count to 0
     lbltotal_child_care_count['text'] == 0
+    lbltotal_child_care_count['text'] = child_care_count
     # set total vacation count to 0
     lbltotal_vacation_count['text'] == 0
+    lbltotal_vacation_count['text'] = vacation_count
+
 
 # display of the Reset button on the first row
 btnReset = Button(myframe, text='Reset', padx=2, pady=2, bd=5, fg='black', font = ('arial', 10, 'bold'),
