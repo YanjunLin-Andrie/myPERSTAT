@@ -111,31 +111,38 @@ def Reasons_counts(appointment_count = appointment_count, child_care_count = chi
 boxes = []
 store_var = []
 for i in roster:
+    # Number of each person
     lblNo = Label(myframe, font=('arial',10,'bold'), text=1+roster.index(i), bd=5)
     lblNo.grid(row=1+roster.index(i), column=0, sticky=W)
-
+    # Names of each person
     lblName = Label(myframe, font = ('arial', 10,'bold'),text=i, padx=3, pady=1, bd=1, width = 12)
     lblName.grid(row=1+roster.index(i),column=1, sticky = W)
-    
+    # Present check box for each person
     var = tk.IntVar()
     check_box=ttk.Checkbutton(myframe, text = "P", variable = var, command=Present_counts)
     check_box.grid(row=1+roster.index(i), column = 2)
     store_var.append(var)
-
+    # Absent reason choice box for each person
     box = ttk.Combobox(myframe, state='readonly')
-    box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
-    box.current(0)
-    box.grid(row=1+roster.index(i), column=3)
-    box.bind("<<ComboboxSelected>>", Reasons_counts)
-    boxes.append(box)
+    # If Present box is checked, disable the combo box 
+    if var.get():
+        box['values'] = ('')
+        box.grid(row=1+roster.index(i), column=3)
+        box.bind("<<ComboboxSelected>>", Reasons_counts)
+        boxes.append(box)
+    # If Person is not present, enable user to choose absent reasons and disable the Present checkbox
+    if not var.get():
+        box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
+        box.current(0)
+        box.grid(row=1+roster.index(i), column=3)
+        box.bind("<<ComboboxSelected>>", Reasons_counts)
+        boxes.append(box)
 
 # empty cells to keep a nice format and appearance of the entire table
     lblempty1 = Label(myframe,font=('arial',10,'bold'), text="", padx=1, pady=1, bd=1, fg="black", width = 13)
     lblempty1.grid(row=1+roster.index(i),column=4, sticky=W)
     lblempty2 = Label(myframe,font=('arial',10,'bold'), text="", padx=1, pady=1, bd=1, fg="black", width = 12)
     lblempty2.grid(row=1+roster.index(i),column=5, sticky=W)
-
-# If var.get(), disable Combobox
 
 
 
