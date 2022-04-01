@@ -93,16 +93,16 @@ def Present_counts(present_count=present_count):
 appointment_count = 0
 child_care_count = 0
 vacation_count = 0
-def Reasons_counts(appointment_count = appointment_count, child_care_count = child_care_count, vacation_count = vacation_count):
+def Reasons_counts(result, appointment_count = appointment_count, child_care_count = child_care_count, vacation_count = vacation_count):
     for box in boxes:
         if box.get() == 'Appointment':
-            appointment_count.x += 1
+            appointment_count += 1
         if box.get() == 'Child Care':
             child_care_count += 1
         if box.get() == 'Vacation':
             vacation_count += 1
     
-    lbltotal_appointment_count['text'] = appointment_count.x
+    lbltotal_appointment_count['text'] = appointment_count
     lbltotal_child_care_count['text'] = child_care_count
     lbltotal_vacation_count['text'] = vacation_count
 
@@ -122,7 +122,7 @@ for i in roster:
     check_box=ttk.Checkbutton(myframe, text = "P", variable = var, command=Present_counts)
     check_box.grid(row=1+roster.index(i), column = 2)
     store_var.append(var)
-    # Absent reason choice box for each person
+    # Absent reasons choice box for each person
     box = ttk.Combobox(myframe, state='readonly')
     # If Present box is checked, disable the combo box 
     if var.get():
@@ -135,7 +135,7 @@ for i in roster:
         box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
         box.current(0)
         box.grid(row=1+roster.index(i), column=3)
-        box.bind("<<ComboboxSelected>>", Reasons_counts)
+        box.bind("<<ComboboxSelected>>", lambda result=roster.index(i):Reasons_counts(result))
         boxes.append(box)
 
 # empty cells to keep a nice format and appearance of the entire table
