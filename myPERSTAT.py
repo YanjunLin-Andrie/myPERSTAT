@@ -2,6 +2,7 @@ from tkinter import Tk, StringVar, ttk
 from tkinter import*
 import tkinter as tk
 import time
+import scroll
 
 # main:
 #Designed backgroun and usage area of the app
@@ -29,7 +30,9 @@ mycanvas.bind('<Configure>', lambda e: mycanvas.configure(scrollregion=mycanvas.
 
 # design of the background of the frame
 myframe = Frame(mycanvas, width = 750, height = 400, bd=6, relief="raised" )
-mycanvas.create_window((0,0), window=myframe, anchor="nw")
+newframe = scroll.ScrollFrame(myframe)
+
+mycanvas.create_window((0,0), window=newframe, anchor="nw")
 wrapper.pack(fill="both", expand="yes", padx=10, pady=10)
 
 # create rows
@@ -37,13 +40,13 @@ Date = StringVar()
 Date.set(time.strftime("%m/%d/%Y"))
 
 #1st row of the table 
-lblNo= Label(myframe,font=('arial',10,'bold'), text="No.", bd=5)
+lblNo= Label(newframe,font=('arial',10,'bold'), text="No.", bd=5)
 lblNo.grid(row=0, column=0, sticky=W)
-lblName = Label(myframe,font=('arial',10,'bold'), text="Name", bd=5, width = 5)
+lblName = Label(newframe,font=('arial',10,'bold'), text="Name", bd=5, width = 5)
 lblName.grid(row=0,column=1, sticky=W)
-lblPresent = Label(myframe,font=('arial',10,'bold'), text="Present", bd=5)
+lblPresent = Label(newframe,font=('arial',10,'bold'), text="Present", bd=5)
 lblPresent.grid(row=0,column=2, sticky=W)
-lblNP = Label(myframe,font=('arial',10,'bold'), text="Reasons of Absent", bd=5, width = 25)
+lblNP = Label(newframe,font=('arial',10,'bold'), text="Reasons of Absent", bd=5, width = 25)
 lblNP.grid(row=0,column=3, sticky=W)
 
 
@@ -90,11 +93,11 @@ def Reset():
 
 
 # display of the Reset button on the first row
-btnReset = Button(myframe, text='Reset', padx=2, pady=2, bd=5, fg='black', font = ('arial', 10, 'bold'),
+btnReset = Button(newframe, text='Reset', padx=2, pady=2, bd=5, fg='black', font = ('arial', 10, 'bold'),
              width = 11, height=1, command= Reset).grid(row = 0, column =4)
 
 #display current date
-lblDate= Label(myframe, font=('arial',11,'bold'), textvariable=Date, padx=4,pady=4,bd=4,fg='black', bg = 'white', relief = 'sunken')
+lblDate= Label(newframe, font=('arial',11,'bold'), textvariable=Date, padx=4,pady=4,bd=4,fg='black', bg = 'white', relief = 'sunken')
 lblDate.grid(row=0, column=5, sticky=W)
 
 
@@ -176,17 +179,17 @@ store_var = []  # <-- Holds the present count values
 
 for i in roster:
     # Number of each person
-    lblNo = Label(myframe, font=('arial',10,'bold'), text=1+roster.index(i), bd=5)
+    lblNo = Label(newframe, font=('arial',10,'bold'), text=1+roster.index(i), bd=5)
     lblNo.grid(row=1+roster.index(i), column=0, sticky=W)
     
     # Names of each person
-    lblName = Label(myframe, font = ('arial', 10,'bold'),text=i, padx=3, pady=1, bd=1, width = 12)
+    lblName = Label(newframe, font = ('arial', 10,'bold'),text=i, padx=3, pady=1, bd=1, width = 12)
     lblName.grid(row=1+roster.index(i),column=1, sticky = W)
     
     # Present check box for each person
     var = tk.IntVar()
     check_box=ttk.Checkbutton(
-        myframe, 
+        newframe, 
         text = "P", 
         variable = var, 
         command=lambda index=roster.index(i): Present_counts(index)
@@ -196,7 +199,7 @@ for i in roster:
     checks.append(check_box)
     
     # Absent reasons choice box for each person
-    box = ttk.Combobox(myframe, state='readonly')
+    box = ttk.Combobox(newframe, state='readonly')
     # If the person is not present, enable user to choose absent reasons and disable the current checkbox
     box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
     box.current(0)
@@ -205,7 +208,7 @@ for i in roster:
     boxes.append(box)
 
     # Reset button for each line
-    btn_resets = Button(myframe,
+    btn_resets = Button(newframe,
                         text='Reset this row',
                         padx=2, pady=2, bd=5, fg='black',
                         font=('arial', 10, 'bold'),
@@ -216,28 +219,28 @@ for i in roster:
     resets.append(btn_resets)
 
     # empty cell to keep a nice format and appearance of the entire table
-    lblempty2 = Label(myframe,font=('arial',10,'bold'), text="", padx=1, pady=1, bd=1, fg="black", width = 12)
+    lblempty2 = Label(newframe,font=('arial',10,'bold'), text="", padx=1, pady=1, bd=1, fg="black", width = 12)
     lblempty2.grid(row=1+roster.index(i),column=5, sticky=W)
 
 # last rows of the table which summarizes the total number of presence and total number of people for each reason of absence
-lbltotal_present = Label(myframe,font=('arial',14,'bold'), text="Total Present", bd=5)
+lbltotal_present = Label(newframe,font=('arial',14,'bold'), text="Total Present", bd=5)
 lbltotal_present.grid(row=len(roster)+2,column=1, sticky=W)
-lbltotal_present_count = Label(myframe,font=('arial',14,'bold'), bd=5, text = present_count)
+lbltotal_present_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = present_count)
 lbltotal_present_count.grid(row=len(roster)+2,column=2, sticky=W)
 
-lbltotal_appointment = Label(myframe,font=('arial',14,'bold'), text="Total Appointment", bd=5)
+lbltotal_appointment = Label(newframe,font=('arial',14,'bold'), text="Total Appointment", bd=5)
 lbltotal_appointment.grid(row=len(roster)+3,column=1, sticky=W)
-lbltotal_appointment_count = Label(myframe,font=('arial',14,'bold'), bd=5, text = appointment_count)
+lbltotal_appointment_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = appointment_count)
 lbltotal_appointment_count.grid(row=len(roster)+3,column=2, sticky=W)
 
-lbltotal_child_care = Label(myframe,font=('arial',14,'bold'), text="Total Child Care", bd=5)
+lbltotal_child_care = Label(newframe,font=('arial',14,'bold'), text="Total Child Care", bd=5)
 lbltotal_child_care.grid(row=len(roster)+4,column=1, sticky=W)
-lbltotal_child_care_count = Label(myframe,font=('arial',14,'bold'), bd=5, text = child_care_count)
+lbltotal_child_care_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = child_care_count)
 lbltotal_child_care_count.grid(row=len(roster)+4,column=2, sticky=W)
 
-lbltotal_vacation = Label(myframe,font=('arial',14,'bold'), text="Total Vacation", bd=5)
+lbltotal_vacation = Label(newframe,font=('arial',14,'bold'), text="Total Vacation", bd=5)
 lbltotal_vacation.grid(row=len(roster)+5,column=1, sticky=W)
-lbltotal_vacation_count = Label(myframe,font=('arial',14,'bold'), bd=5, text = vacation_count)
+lbltotal_vacation_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = vacation_count)
 lbltotal_vacation_count.grid(row=len(roster)+5,column=2, sticky=W)
 
 root.geometry("750x400")
