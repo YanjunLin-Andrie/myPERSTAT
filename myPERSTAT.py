@@ -2,7 +2,6 @@ from tkinter import Tk, StringVar, ttk
 from tkinter import*
 import tkinter as tk
 import time
-import scroll
 
 # main:
 #Designed backgroun and usage area of the app
@@ -25,12 +24,13 @@ mycanvas.pack(side=LEFT, fill=BOTH,expand=1)
 yscrollbar = ttk.Scrollbar(wrapper, orient="vertical", command=mycanvas.yview)
 yscrollbar.pack(side=RIGHT, fill="y")
 
-mycanvas.configure(yscrollcommand=yscrollbar.set)
+
+mycanvas.configure(yscrollcommand=yscrollbar.set, scrollregion=(0,0,250,250))
 mycanvas.bind('<Configure>', lambda e: mycanvas.configure(scrollregion=mycanvas.bbox('all')))
 
 # design of the background of the frame
 myframe = Frame(mycanvas, width = 750, height = 400, bd=6, relief="raised" )
-newframe = scroll.ScrollFrame(myframe)
+newframe = myframe
 
 mycanvas.create_window((0,0), window=newframe, anchor="nw")
 wrapper.pack(fill="both", expand="yes", padx=10, pady=10)
