@@ -8,12 +8,12 @@ import time
 count = 0
 root = Tk()
 root.title("PERSTAT")
-root.geometry('750x400+0+0')
+root.geometry('950x700+0+0')
 root.configure(background = "black")
 
 
 # collection: list of soldiers/student/workers that needs to track presence of
-roster = ["Goodman","McCORD","Martinez","Garr","Reyes","Fegurgur","Antoine","Simula","Singh","Johnson","Huber",
+roster = ["Goodman","McCord","Martinez","Garr","Reyes","Fegurgur","Antoine","Simula","Singh","Johnson","Huber",
           "Lema","Young","Harris"]
 
 # create a main frame
@@ -22,6 +22,7 @@ wrapper = LabelFrame(root)
 mycanvas = Canvas(wrapper)
 mycanvas.pack(side=LEFT, fill=BOTH,expand=1)
 
+# Create the ability to scroll on the page
 yscrollbar = Scrollbar(wrapper, orient="vertical", command=mycanvas.yview)
 yscrollbar.pack(side=RIGHT, fill="y")
 
@@ -30,8 +31,11 @@ mycanvas.bind('<Configure>', lambda e: mycanvas.configure(scrollregion=mycanvas.
 
 
 # design of the background of the frame
-myframe = Frame(mycanvas, width = 750, height = 400, bd=6, relief="raised" )
+myframe = Frame(mycanvas, width = 950, height = 700, bd=6, relief="raised" )
+myframe.pack(side=LEFT)
 newframe = myframe
+right_frame = Frame(mycanvas, width = 170, height = 600, bd=6, relief="raised" )
+right_frame.pack(side=RIGHT)
 
 mycanvas.create_window((0,0), window=newframe, anchor="nw")
 wrapper.pack(fill="both", expand="yes", padx=10, pady=10)
@@ -76,12 +80,29 @@ def reset_this(pressed):
     Reasons_counts(0)
 
 
-# def delete_all():
+# def display_text():
+#    global entry
+#    string= entry.get()
+#    label.configure(text=string)
+#    label=Label(newframe, text='', font=('arial',10,'bold'))
+#    label.pack()
+
+#    entry = Entry(newframe)
+#    entry.focus_set()
+#    entry.pack()
+#    roster.append(entry)
 
 
 # def delete_row():
-#     if name in roster:
-#         roster.pop(name)
+#     print(myframe.grid_slaves())
+    # self.num=self.num-1
+    # #print("in delete num is",self.num)
+    # l=list(self.listFrame.grid_slaves(row=int(self.num)))
+    # #print(l)
+    # for w in l:
+    #     w.grid_forget()
+
+    
 
 # def add_process:
 #     #Add line to table. Populate eveything but the name.
@@ -123,26 +144,69 @@ def Reset():
     lbltotal_vacation_count['text'] == 0
     lbltotal_vacation_count['text'] = vacation_count
 
-def display_text():
-   global entry
-   string= entry.get()
-   label.configure(text=string)
-   label=Label(newframe, text='', font=('arial',10,'bold'))
-   label.pack()
-
-   entry = Entry(newframe)
-   entry.focus_set()
-   entry.pack()
-   roster.append(entry)
-
 def add_a_student():
-    print('So far so good.')
+
+    def retrieve():
+        new_roster_name = lblNew_Name.get()
+        roster.append(new_roster_name)
+
+        for i in roster:
+    # Number of each person
+            lblNo = Label(newframe, font=('arial',10,'bold'), text=1+roster.index(i), bd=5)
+            lblNo.grid(row=1+roster.index(i), column=0, sticky=W)
+            
+            # Names of each person
+            lblName = Label(newframe, font = ('arial', 10,'bold'),text=i, padx=3, pady=1, bd=1, width = 12)
+            lblName.grid(row=1+roster.index(i),column=1, sticky = W)
+            
+            # Present check box for each person
+            var = tk.IntVar()
+            check_box=ttk.Checkbutton(
+                newframe, 
+                text = "P", 
+                variable = var, 
+                command=lambda index=roster.index(i): Present_counts(index)
+            )
+            check_box.grid(row=1+roster.index(i), column = 2)
+            store_var.append(var)
+            checks.append(check_box)
+            
+            # Absent reasons choice box for each person
+            box = ttk.Combobox(newframe, state='readonly')
+            # If the person is not present, enable user to choose absent reasons and disable the current checkbox
+            box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
+            box.current(0)
+            box.grid(row=1+roster.index(i), column=3)
+            box.bind("<<ComboboxSelected>>", lambda index=roster.index(i): Reasons_counts(index))
+            boxes.append(box)
+
+            # Reset button for each line
+            btn_resets = Button(newframe,
+                                text='Reset this row',
+                                padx=2, pady=2, bd=5, fg='black',
+                                font=('arial', 10, 'bold'),
+                                width=11, height=1,
+                                command=lambda index=roster.index(i): reset_this(index)
+            )
+            btn_resets.grid(row=1 + roster.index(i), column=4)
+            resets.append(btn_resets)
+
+            # Delete button for the entire table
+            btnDelete = ttk.Button(newframe,text="Delete Row", command=lambda: btnDelete.pack_forget(), takefocus=True)
+            btnDelete.grid(row=1+roster.index(i),column=5, sticky=W)
+
+        addButton = Button(newframe, text="Add Student", command=add_a_student).grid(row=(len(roster)+2), column=4, sticky='W')
+
+        
+
+    rownum = len(roster)+1
     lblNew_No = Label(newframe, font=('arial',10,'bold'), text=len(roster)+1, bd=5)
-    lblNew_No.grid(row=len(roster)+1, column=0, sticky=W)
+    lblNew_No.grid(row=rownum, column=0, sticky=W)
     
     # Names of each person
     lblNew_Name = Entry(newframe, font = ('arial', 10,'bold'),text='New Name')
-    lblNew_Name.grid(row=len(roster)+1,column=1, sticky = W)
+    lblNew_Name.grid(row=rownum,column=1, sticky = W)
+
     
     # Present check box for each person
     var = tk.IntVar()
@@ -152,7 +216,7 @@ def add_a_student():
         variable = var, 
         command=lambda index=roster.index(i): Present_counts(index)
     )
-    check_box.grid(row=len(roster)+1, column = 2)
+    check_box.grid(row=rownum, column = 2)
     store_var.append(var)
     checks.append(check_box)
     
@@ -161,7 +225,7 @@ def add_a_student():
     # If the person is not present, enable user to choose absent reasons and disable the current checkbox
     box['values'] = ('Choose from the following', 'Appointment', 'Child Care', 'Vacation')
     box.current(0)
-    box.grid(row=len(roster)+1, column=3)
+    box.grid(row=rownum, column=3)
     box.bind("<<ComboboxSelected>>", lambda index=roster.index(i): Reasons_counts(index))
     boxes.append(box)
 
@@ -173,8 +237,13 @@ def add_a_student():
                         width=11, height=1,
                         command=lambda index=roster.index(i): reset_this(index)
     )
-    btn_resets.grid(row=1 + roster.index(i), column=4)
+    btn_resets.grid(row=rownum, column=4)
     resets.append(btn_resets)
+
+    submit_btn = Button(newframe, text='Submit',command=retrieve)
+    submit_btn.grid(row=rownum, column=5)
+    
+    
 
     # Delete cell for the entire table
     # btnNew_Delete = Button(newframe,font=('arial',10,'bold'), text="Delete Row", command=delete_row, padx=1, pady=1, bd=1, fg="black", width = 12)
@@ -312,30 +381,52 @@ for i in roster:
     resets.append(btn_resets)
 
     # Delete button for the entire table
-    # btnDelete = Button(newframe,font=('arial',10,'bold'), text="Delete Row", command=delete_row, padx=1, pady=1, bd=1, fg="black", width = 12)
-    # btnDelete.grid(row=1+roster.index(i),column=5, sticky=W)
+    btnDelete = ttk.Button(newframe,text="Delete Row", command=lambda: btnDelete.pack_forget(), takefocus=True)
+    btnDelete.grid(row=1+roster.index(i),column=5, sticky=W)
 
-# last rows of the table which summarizes the total number of presence and total number of people for each reason of absence
-lbltotal_present = Label(newframe,font=('arial',14,'bold'), text="Total Present", bd=5)
-lbltotal_present.grid(row=len(roster)+2,column=1, sticky=W)
-lbltotal_present_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = present_count)
-lbltotal_present_count.grid(row=len(roster)+2,column=2, sticky=W)
+# # last rows of the table which summarizes the total number of presence and total number of people for each reason of absence
+# lbltotal_present = Label(newframe,font=('arial',14,'bold'), text="Total Present", bd=5)
+# lbltotal_present.grid(row=len(roster)+2,column=1, sticky=W)
+# lbltotal_present_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = present_count)
+# lbltotal_present_count.grid(row=len(roster)+2,column=2, sticky=W)
 
-lbltotal_appointment = Label(newframe,font=('arial',14,'bold'), text="Total Appointment", bd=5)
-lbltotal_appointment.grid(row=len(roster)+3,column=1, sticky=W)
-lbltotal_appointment_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = appointment_count)
-lbltotal_appointment_count.grid(row=len(roster)+3,column=2, sticky=W)
+# lbltotal_appointment = Label(newframe,font=('arial',14,'bold'), text="Total Appointment", bd=5)
+# lbltotal_appointment.grid(row=len(roster)+3,column=1, sticky=W)
+# lbltotal_appointment_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = appointment_count)
+# lbltotal_appointment_count.grid(row=len(roster)+3,column=2, sticky=W)
 
-lbltotal_child_care = Label(newframe,font=('arial',14,'bold'), text="Total Child Care", bd=5)
-lbltotal_child_care.grid(row=len(roster)+4,column=1, sticky=W)
-lbltotal_child_care_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = child_care_count)
-lbltotal_child_care_count.grid(row=len(roster)+4,column=2, sticky=W)
+# lbltotal_child_care = Label(newframe,font=('arial',14,'bold'), text="Total Child Care", bd=5)
+# lbltotal_child_care.grid(row=len(roster)+4,column=1, sticky=W)
+# lbltotal_child_care_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = child_care_count)
+# lbltotal_child_care_count.grid(row=len(roster)+4,column=2, sticky=W)
 
-lbltotal_vacation = Label(newframe,font=('arial',14,'bold'), text="Total Vacation", bd=5)
-lbltotal_vacation.grid(row=len(roster)+5,column=1, sticky=W)
-lbltotal_vacation_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = vacation_count)
-lbltotal_vacation_count.grid(row=len(roster)+5,column=2, sticky=W)
+# lbltotal_vacation = Label(newframe,font=('arial',14,'bold'), text="Total Vacation", bd=5)
+# lbltotal_vacation.grid(row=len(roster)+5,column=1, sticky=W)
+# lbltotal_vacation_count = Label(newframe,font=('arial',14,'bold'), bd=5, text = vacation_count)
+# lbltotal_vacation_count.grid(row=len(roster)+5,column=2, sticky=W)
 
-root.geometry("750x400")
+
+lbltotal_present = Label(right_frame,font=('arial',14,'bold'), text="Total Present", bd=5)
+lbltotal_present.grid(row=1,column=1, sticky=W)
+lbltotal_present_count = Label(right_frame,font=('arial',14,'bold'), bd=5, text = present_count)
+lbltotal_present_count.grid(row=1,column=2, sticky=W)
+
+lbltotal_appointment = Label(right_frame,font=('arial',14,'bold'), text="Total Appointment", bd=5)
+lbltotal_appointment.grid(row=2,column=1, sticky=W)
+lbltotal_appointment_count = Label(right_frame,font=('arial',14,'bold'), bd=5, text = appointment_count)
+lbltotal_appointment_count.grid(row=2,column=2, sticky=W)
+
+lbltotal_child_care = Label(right_frame,font=('arial',14,'bold'), text="Total Child Care", bd=5)
+lbltotal_child_care.grid(row=3,column=1, sticky=W)
+lbltotal_child_care_count = Label(right_frame,font=('arial',14,'bold'), bd=5, text = child_care_count)
+lbltotal_child_care_count.grid(row=3,column=2, sticky=W)
+
+lbltotal_vacation = Label(right_frame,font=('arial',14,'bold'), text="Total Vacation", bd=5)
+lbltotal_vacation.grid(row=4,column=1, sticky=W)
+lbltotal_vacation_count = Label(right_frame,font=('arial',14,'bold'), bd=5, text = vacation_count)
+lbltotal_vacation_count.grid(row=4,column=2, sticky=W)
+
+
+root.geometry("950x700")
 root.resizable(True,True)
 root.mainloop()
