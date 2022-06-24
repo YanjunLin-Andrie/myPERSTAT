@@ -4,7 +4,7 @@ import tkinter as tk
 import time
 
 # main:
-# Designed backgroun and usage area of the app
+# Designed background and usage area of the app
 count = 0
 root = Tk()
 root.title("PERSTAT")
@@ -12,8 +12,22 @@ root.geometry('950x700+0+0')
 root.configure(background="black")
 
 # collection: list of soldiers/student/workers that needs to track presence of
-roster = ["Goodman", "McCord", "Martinez", "Garr", "Reyes", "Fegurgur", "Antoine", "Simula", "Singh", "Johnson",
-          "Huber","Lema", "Young", "Harris"]
+roster = [
+    "Goodman",
+    "McCord",
+    "Martinez",
+    "Garr",
+    "Reyes",
+    "Fegurgur",
+    "Antoine",
+    "Simula",
+    "Singh",
+    "Johnson",
+    "Huber",
+    "Lema",
+    "Young",
+    "Harris"
+]
 
 # create a main frame
 
@@ -64,6 +78,12 @@ def reset_this(pressed):
     Reasons_counts(0)
 
 
+def Clear_vars():
+    boxes.clear()
+    checks.clear()
+    resets.clear()
+    store_var.clear()
+
 # Reset all button
 def Reset():
     # iterate over the roster list
@@ -83,66 +103,73 @@ def Reset():
     lbltotal_present_count['text'] = present_count
 
     # set Total appointment count to 0
-    lbltotal_appointment_count['text'] == 0
+    appointment_count == 0
     lbltotal_appointment_count['text'] = appointment_count
 
     # set total child care count to 0
-    lbltotal_child_care_count['text'] == 0
+    child_care_count == 0
     lbltotal_child_care_count['text'] = child_care_count
 
     # set total vacation count to 0
-    lbltotal_vacation_count['text'] == 0
+    vacation_count == 0
     lbltotal_vacation_count['text'] = vacation_count
 
 
-# Clears the lists holding previous roster value
-def clear_stuff():
-    # Reset everything
-    Reset()
-    boxes.clear()
-    checks.clear()
-    resets.clear()
-    store_var.clear()
-
-
 def add_a_student():
-    # Clear everything
-    clear_stuff()
-
+    # Add Function
     def adding():
+        # Reset the entire file
+        Reset()
+        Clear_vars()
         # Get new name
         new_roster_name = lblNew_Name.get()
         roster.append(new_roster_name)
-
-        # Create everything including new student
+        # Display all
         retrieve()
 
     rownum = len(roster) + 1
-    lblNew_No = Label(newframe, font=('arial', 10, 'bold'), text=len(roster) + 1, bd=5)
-    lblNew_No.grid(row=rownum, column=0, sticky=W)
 
-    # Names of each person
+    # New Name button
     lblNew_Name = Entry(newframe, font=('arial', 10, 'bold'), text='New Name')
     lblNew_Name.grid(row=rownum, column=1, sticky=W)
 
+    # Submit new name
     submit_btn = Button(newframe, text='Submit', command=adding)
     submit_btn.grid(row=rownum, column=5)
 
 
 # display of the Reset button on the first row
-btnReset = Button(newframe, text='Reset', padx=2, pady=2, bd=5, fg='black', font=('arial', 10, 'bold'),
-                  width=11, height=1, command=Reset).grid(row=0, column=4)
+Button(
+    newframe,
+    text='Reset',
+    padx=2, pady=2,
+    bd=5, fg='black',
+    font=('arial', 10, 'bold'),
+    width=11,
+    height=1,
+    command=Reset
+).grid(row=0, column=4)
 
 # display current date
-lblDate = Label(newframe, font=('arial', 11, 'bold'), textvariable=Date, padx=4, pady=4, bd=4, fg='black', bg='white',
-                relief='sunken')
+lblDate = Label(newframe,
+                font=('arial', 11, 'bold'),
+                textvariable=Date,
+                padx=4, pady=4, bd=4,
+                fg='black',
+                bg='white',
+                relief='sunken'
+                )
 lblDate.grid(row=0, column=5, sticky=W)
 
 # # Add button at the end of the list
-addButton = Button(right_frame, text="Add Student", command=add_a_student).grid(row=5, column=2,sticky='W')
+Button(right_frame, text="Add Student", command=add_a_student).grid(row=5, column=2, sticky='W')
 
 # get all the counts of presence, 
 present_count = 0
+# count each occurrence of each reasons from all boxes
+appointment_count = 0
+child_care_count = 0
+vacation_count = 0
 
 
 # Calculate how many people are present in the roster
@@ -171,12 +198,6 @@ def Present_counts(index, present_count=present_count):
     lbltotal_present_count['text'] = present_count
 
 
-# count each occurrence of each reasons from all boxes
-appointment_count = 0
-child_care_count = 0
-vacation_count = 0
-
-
 # Calculate how many people are absent from the roster for each reason
 def Reasons_counts(
         result=None,
@@ -189,6 +210,7 @@ def Reasons_counts(
 
         # If the combobox does not equal to its default value:
         if boxes[index].get() != 'Choose from the following':
+            # print("Box Index", boxes[index])
             # Locate the current checkbox
             check_box = checks[index]
             # Disable the checkbox in that row
@@ -289,7 +311,6 @@ lbltotal_vacation = Label(right_frame, font=('arial', 14, 'bold'), text="Total V
 lbltotal_vacation.grid(row=4, column=1, sticky=W)
 lbltotal_vacation_count = Label(right_frame, font=('arial', 14, 'bold'), bd=5, text=vacation_count)
 lbltotal_vacation_count.grid(row=4, column=2, sticky=W)
-
 
 root.geometry("950x700")
 root.resizable(True, True)
